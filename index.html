@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(90deg, #4a6cf7, #6a82fb);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .video-wrapper {
+            flex: 1;
+            min-width: 300px;
+            background-color: #000;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-wrapper h3 {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        .video-status {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        video {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            background-color: #222;
+            transform: scaleX(-1); /* Mirror effect for self-view */
+        }
+
+        .controls {
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            background-color: #f5f7ff;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #toggleChatBtn {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            margin-right: 250px;
+        }
+
+        #toggleChatBtn.stop-mode {
+            background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        }
+
+        #nextBtn {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            margin-left: -150px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        button.active {
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #4a5568;
+            background-color: #e2e8f0;
+        }
+        
+        .online-users {
+            text-align: center;
+            padding: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #4a5568;
+            background-color: #f7fafc;
+            border-radius: 0 0 10px 10px;
+            margin-bottom: 0px;
+        }
+
+        .waiting {
+            color: #d97706;
+        }
+
+        .connected {
+            color: #059669;
+        }
+
+        .disconnected {
+            color: #dc2626;
+        }
+
+        @media (max-width: 768px) {
+            .video-wrapper {
+                min-width: 100%;
+            }
+            
+            h1 {
+                font-size: 3rem;
+            }
+            
+            button {
+                width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Quick Chat</h1>
+            <p class="subtitle">Connect with people around the world</p>
+        </header>
+        
+        <div class="video-container">
+            <div class="video-wrapper">
+                <h3>My</h3>
+                <video id="localVideo" autoplay muted playsinline></video>
+                <div class="video-status" id="localVideoStatus">Camera off</div>
+            </div>
+            <div class="video-wrapper">
+                <h3>Peer</h3>
+                <video id="remoteVideo" autoplay playsinline></video>
+                <div class="video-status" id="remoteVideoStatus">No connection</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="toggleChatBtn">Start</button>
+            <button id="nextBtn" disabled>Next</button>
+        </div>
+        
+        <div class="status" id="status">Disconnected - Click Start to begin</div>
+        <div class="online-users" id="onlineUsers">Online: 0</div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="client.js"></script>
+</body>
+</html>
